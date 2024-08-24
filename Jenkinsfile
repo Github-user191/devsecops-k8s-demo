@@ -38,7 +38,7 @@ pipeline {
           }
       }
 
-      // Run multiple steps in Parallel.
+      // Run multiple steps in Parallel
       stage('Vulnerability Scan - Docker') {
        steps {
          parallel(

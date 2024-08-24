@@ -39,12 +39,24 @@ pipeline {
       }
 
       // Run multiple steps in Parallel
+      stage('Vulnerability Scan - Docker') {
+       steps {
+         parallel(
+           'Dependency Scan': {
+             sh "mvn dependency-check:check"
+           },
+           'Trivy Scan': { // Returns an exit code (0/1) and either passes or fails the pipeline
+             sh "bash trivy-docker-image-scan.sh"
+           })
+       }
+     }
 
       stage('Docker Build and Push') {
         steps {
           withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
             sh 'printenv' // Jenkins ENV Variables available
-            sh 'docker build -t dockerdemo786/numeric-app:""$GIT_COMMIT"" .' // Using GIT_COMMIT as version number for Docker image
+            # Run as root so the Jenkins user can access the necessary files/folders
+            sh 'sudo docker build -t dockerdemo786/numeric-app:""$GIT_COMMIT"" .' // Using GIT_COMMIT as version number for Docker image
             sh 'docker push dockerdemo786/numeric-app:""$GIT_COMMIT""'
           }
         }

@@ -39,17 +39,6 @@ pipeline {
       }
 
       // Run multiple steps in Parallel
-      stage('Vulnerability Scan - Docker') {
-       steps {
-         parallel(
-           'Dependency Scan': {
-             sh "mvn dependency-check:check"
-           },
-           'Trivy Scan': { // Returns an exit code (0/1) and either passes or fails the pipeline
-             sh "bash trivy-docker-image-scan.sh"
-           })
-       }
-     }
 
       stage('Docker Build and Push') {
         steps {

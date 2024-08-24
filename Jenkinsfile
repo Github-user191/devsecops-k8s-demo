@@ -22,7 +22,7 @@ pipeline {
 
       stage('Mutation Tests - PIT') {
         when {
-              expression { return false } // This will prevent the stage from running
+            expression { return false } // This will prevent the stage from running
         }
 
         steps {
@@ -39,6 +39,10 @@ pipeline {
       }
 
       stage('SonarQube - SAST') {
+//           when {
+//             expression { return false } // This will prevent the stage from running
+//           }
+
           steps {
             sh "mvn clean verify sonar:sonar \
                   -Dsonar.projectKey=numeric-application \

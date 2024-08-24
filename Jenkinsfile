@@ -29,7 +29,7 @@ pipeline {
         post {
             always {
                 // Publishes reports of Mutation tests in this directory
-                pitmutation mutationStatsFile '**/target/pit-reports/**/mutation.xml'
+                //pitmutation mutationStatsFile '**/target/pit-reports/**/mutation.xml'
             }
         }
       }

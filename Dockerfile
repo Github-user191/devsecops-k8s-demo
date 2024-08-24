@@ -4,7 +4,7 @@ ARG JAR_FILE=target/*.jar
 
 # Creates a Group "pipeline" and a User "k8s-pipeline" inside the Docker Container runtime
 # It also adds this new user to the "pipeline" group
-RUN sudo addgroup -S pipeline && adduser -S k8s-pipeline -G pipeline
+RUN addgroup -S pipeline && adduser -S k8s-pipeline -G pipeline
 
 # COPY - Simply copies files from host system to the Docker image at the path
 # ADD - Does everything COPY can do, but also includes features like copying from a URL or unpacking an archive file automatically etc.

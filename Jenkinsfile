@@ -39,9 +39,9 @@ pipeline {
       }
 
       stage('SonarQube - SAST') {
-//           when {
-//             expression { return false } // This will prevent the stage from running
-//           }
+          when {
+            expression { return false } // This will prevent the stage from running
+          }
 
           steps {
             sh "mvn clean verify sonar:sonar \

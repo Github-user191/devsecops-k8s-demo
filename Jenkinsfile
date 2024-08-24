@@ -39,9 +39,9 @@ pipeline {
       }
 
       stage('SonarQube - SAST') {
-//           when {
-//             expression { return false } // This will prevent the stage from running
-//           }
+          when {
+            expression { return false } // This will prevent the stage from running
+          }
 
           steps {
             sh "mvn clean verify sonar:sonar \
@@ -50,7 +50,18 @@ pipeline {
                   -Dsonar.host.url=http://devsecopsdemo786.eastus.cloudapp.azure.com:9000 \
                   -Dsonar.token=sqp_05d48c71c3494c547d974545dd5f5f4e905a66ee"
           }
+      }
+
+      stage('Vulnerability Scan - Docker') {
+        steps {
+            sh "mvn dependency-check:check"
         }
+        post {
+            always {
+              dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+            }
+        }
+      }
 
       stage('Docker Build and Push') {
         steps {

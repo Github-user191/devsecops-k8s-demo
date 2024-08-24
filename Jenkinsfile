@@ -40,6 +40,7 @@ pipeline {
 
       stage('SonarQube - SAST') {
           steps {
+            sh "mvn clean install"
             sh "mvn clean verify sonar:sonar -Dsonar.projectKey=numeric-application \
                   -Dsonar.projectName='numeric application' \
                   -Dsonar.host.url=http://devsecopsdemo786.eastus.cloudapp.azure.com:9000 \

@@ -47,6 +47,10 @@ pipeline {
            },
            'Trivy Scan': { // Returns an exit code (0/1) and either passes or fails the pipeline
              sh "bash trivy-docker-image-scan.sh"
+           },
+           'OPA Conftest': {
+             // --policy is the name of the Config file you want to test
+             sh 'docker run --rm -v $(pwd):/project openpolicyagent/conftest test --policy opa-docker-security.rego Dockerfile'
            })
        }
      }

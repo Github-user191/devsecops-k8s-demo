@@ -27,7 +27,16 @@ pipeline {
             sh 'docker build -t dockerdemo786/numeric-app:""$GIT_COMMIT"" .' // Using GIT_COMMIT as version number for Docker image
             sh 'docker push dockerdemo786/numeric-app:""$GIT_COMMIT""'
           }
+        }
+      }
 
+      stage('Kubernetes Deployment - DEV') {
+        steps {
+          withKubeConfig([credentialsId: 'kubeconfig']) { // To get access the Kubernetes API Server
+            // Replace every occurrence of 'replace' with the string dockerdemo786/numeric-app:${GIT_COMMIT} inside the manifest file
+            sh "sed -i 's#replace#dockerdemo786/numeric-app:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
+            sh "kubectl apply -f k8s_deployment_service.yaml"
+          }
         }
       }
     }

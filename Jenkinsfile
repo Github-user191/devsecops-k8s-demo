@@ -21,9 +21,9 @@ pipeline {
       }
 
       stage('Mutation Tests - PIT') {
-        when {
-            expression { return false } // This will prevent the stage from running
-        }
+//         when {
+//             expression { return false } // This will prevent the stage from running
+//         }
 
         steps {
             sh "mvn org.pitest:pitest-maven:mutationCoverage"

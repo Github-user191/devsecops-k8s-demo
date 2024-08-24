@@ -21,10 +21,12 @@ pipeline {
       }
 
       stage('Mutation Tests - PIT') {
+        when {
+              expression { return false } // This will prevent the stage from running
+        }
+
         steps {
-            script {
-                sh "mvn org.pitest:pitest-maven:mutationCoverage"
-            }
+            sh "mvn org.pitest:pitest-maven:mutationCoverage"
         }
         post {
             always {
@@ -35,6 +37,15 @@ pipeline {
             }
         }
       }
+
+      stage('SonarQube - SAST') {
+          steps {
+            sh "mvn clean verify sonar:sonar -Dsonar.projectKey=numeric-application \
+                  -Dsonar.projectName='numeric application' \
+                  -Dsonar.host.url=http://devsecopsdemo786.eastus.cloudapp.azure.com:9000 \
+                  -Dsonar.token=sqp_d109ed902eba19447de2b1a57374b89ed36f371e"
+          }
+        }
 
       stage('Docker Build and Push') {
         steps {

@@ -94,7 +94,7 @@ pipeline {
            },
            "Rollout Status": {
              withKubeConfig([credentialsId: 'kubeconfig']) { // To get access the Kubernetes API Server
-               "sh bash k8s-deployment-rollout-status.sh"
+               sh "bash k8s-deployment-rollout-status.sh"
              }
            }
          )

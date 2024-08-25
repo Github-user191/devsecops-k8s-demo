@@ -87,7 +87,7 @@ pipeline {
                sh "bash kubesec-scan.sh"
              },
              "Trivy Scan": { // Returns an exit code (0/1) and either passes or fails the pipeline
-                sh "sudo bash trivy k8s-scan.sh"
+                sh "bash trivy-k8s-scan.sh"
              })
         }
       }

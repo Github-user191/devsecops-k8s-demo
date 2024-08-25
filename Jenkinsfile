@@ -69,7 +69,7 @@ pipeline {
       stage('Docker Build and Push') {
         steps {
           withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
-            sh 'printenv' // Jenkins ENV Variables available
+            sh 'printenv' // Jenkins ENV Variables available.
             // Run as root so the Jenkins user can access the necessary files/folders
             sh 'sudo docker build -t dockerdemo786/numeric-app:""$GIT_COMMIT"" .' // Using GIT_COMMIT as version number for Docker image
             sh 'docker push dockerdemo786/numeric-app:""$GIT_COMMIT""'

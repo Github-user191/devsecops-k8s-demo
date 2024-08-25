@@ -7,7 +7,7 @@ pipeline {
       containerName = "devsecops-container"
       serviceName = "devsecops-svc"
       imageName = "dockerdemo786/numeric-app:${GIT_COMMIT}"
-      applicationURL = "http://devsecopsdemo786.eastus.cloudapp.azure.com/"
+      applicationURL = "http://devsecopsdemo786.eastus.cloudapp.azure.com"
       applicationURI = "/increment/99"
     }
 
@@ -107,6 +107,25 @@ pipeline {
              }
            }
          )
+        }
+      }
+
+      stage('Integration Tests - DEV') {
+        steps {
+          script {
+            try {
+              withKubeConfig([credentialsId: 'kubeconfig']) { // To get access the Kubernetes API Server
+                sh "bash integration-test.sh"
+              }
+            } catch(e) {
+
+              // If the integration tests fail, rollback to the previous Deployment
+              withKubeConfig([credentialsId: 'kubeconfig']) { // To get access the Kubernetes API Server
+                sh "kubectl -n default rollout undo deploy ${deploymentName}"
+              }
+              throw e
+            }
+          }
         }
       }
     }

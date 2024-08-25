@@ -4,11 +4,14 @@
 
 sleep 5s
 
+# Get the port of the service by extracting it from the output of the get service call
 PORT=$(kubectl -n default get svc ${serviceName} -o json | jq .spec.ports[].nodePort)
 
+# This is defined in the Jenkins Pipeline environment variables
 echo $PORT
 echo $applicationURL:$PORT/$applicationURI
 
+# Make sure the service has a Port, so that we know it is a NodePort and not a ClusterIP etc
 if [[ ! -z "$PORT" ]];
 then
 

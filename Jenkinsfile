@@ -1,5 +1,16 @@
 pipeline {
     agent any
+
+    // We can reference these variables in our pipeline and also in scripts used in the pipeline
+    environment {
+      deploymentName = "devsecops"
+      containerName = "devsecops-container"
+      serviceName = "devsecops-svc"
+      imageName = "dockerdemo786/numeric-app:${GIT_COMMIT}"
+      applicationURL = "http://devsecopsdemo786.eastus.cloudapp.azure.com/"
+      applicationURI = "/increment/99"
+    }
+
     stages {
       stage('Build Artifact') {
         steps {
@@ -75,11 +86,18 @@ pipeline {
 
       stage('Kubernetes Deployment - DEV') {
         steps {
-          withKubeConfig([credentialsId: 'kubeconfig']) { // To get access the Kubernetes API Server
-            // Replace every occurrence of 'replace' with the string dockerdemo786/numeric-app:${GIT_COMMIT} inside the manifest file
-            sh "sed -i 's#replace#dockerdemo786/numeric-app:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
-            sh "kubectl apply -f k8s_deployment_service.yaml"
-          }
+         parallel(
+           "Deployment": {
+            withKubeConfig([credentialsId: 'kubeconfig']) { // To get access the Kubernetes API Server
+             sh "bash k8s-deployment.sh"
+            }
+           },
+           "Rollout Status": {
+             withKubeConfig([credentialsId: 'kubeconfig']) { // To get access the Kubernetes API Server
+               "sh bash k8s-deployment-rollout-status.sh"
+             }
+           }
+         )
         }
       }
     }

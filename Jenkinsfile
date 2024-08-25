@@ -27,7 +27,7 @@ pipeline {
         always {
 
           // Use sendNotification.groovy from Shared Library and provide current build result as parameter
-          sendNotifications currentBuild.result
+          sendNotification currentBuild.result
 
 
           // Publishes reports of Mutation tests in this directory

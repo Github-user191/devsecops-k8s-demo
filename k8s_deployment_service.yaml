@@ -22,6 +22,8 @@ spec:
       containers:
       - image: replace
         name: devsecops-container
+        # Allow Access to create directories in /tmp
+        # All other directories are readonly
         volumeMounts:
         - mountPath: /tmp
           name: vol

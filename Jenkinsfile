@@ -116,9 +116,9 @@ pipeline {
 
 
           // Publishes reports of Mutation tests in this directory
-          script {
-              pitmutation mutationStatsFile '**/target/pit-reports/**/mutation.xml'
-          }
+          //script {
+           //   pitmutation mutationStatsFile '**/target/pit-reports/**/mutation.xml'
+          //}
         }
 
         //success {}

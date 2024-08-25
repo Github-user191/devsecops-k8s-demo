@@ -128,6 +128,15 @@ pipeline {
           }
         }
       }
+
+      stage('OWASP ZAP - DAST') {
+        steps {
+          withKubeConfig([credentialsId: 'kubeconfig']) { // To get access the Kubernetes API Server
+            sh 'bash zap.sh' // This script runs the ZAP Test once the application is running
+          }
+        }
+      }
+
     }
 
     post {
@@ -135,7 +144,7 @@ pipeline {
           junit 'target/surefire-reports/*.xml'
           jacoco execPattern: 'target/jacoco.exec'
           dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
-
+          publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'owasp-zap-report', reportFiles: 'zap_report.html', reportName: 'OWASP ZAP HTML Report', reportTitles: 'OWASP ZAP HTML Report', useWrapperFileDirectly: true])
 
           // Publishes reports of Mutation tests in this directory
           //script {

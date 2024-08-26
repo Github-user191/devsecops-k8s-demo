@@ -140,6 +140,34 @@ pipeline {
         }
       }
 
+      stage('Promote to PROD?') {
+        steps {
+          timeout(time: 2, unit: 'DAYS') {
+            input 'Do you want to Approve the Deployment to Production Environment?'
+          }
+        }
+      }
+
+      # Run scans against Master Node, Etcd and Kubelet
+      # for potential vulnerabilities in our Cluster configuration
+      stage('Kubernetes CIS Benchmark') {
+        steps {
+          script {
+            parallel(
+              "Scan Master": {
+                sh "bash cis-master.sh"
+              },
+              "Scan Etcd": {
+                sh "bash cis-etcd.sh"
+              },
+              "Scan Kubelet": {
+                sh "bash cis-kubelet.sh"
+              }
+            )
+          }
+        }
+      }
+
     }
 
     post {

@@ -148,8 +148,8 @@ pipeline {
         }
       }
 
-      # Run scans against Master Node, Etcd and Kubelet
-      # for potential vulnerabilities in our Cluster configuration
+      // Run scans against Master Node, Etcd and Kubelet
+      // for potential vulnerabilities in our Cluster configuration
       stage('Kubernetes CIS Benchmark') {
         steps {
           script {

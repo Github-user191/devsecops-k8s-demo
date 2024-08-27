@@ -95,18 +95,18 @@ pipeline {
         }
       }
 
-
+      // For DEV - 2 Replicas
       stage('Kubernetes Deployment - DEV') {
         steps {
          parallel(
            "Deployment": {
             withKubeConfig([credentialsId: 'kubeconfig']) { // To get access the Kubernetes API Server
-             sh "bash k8s-deployment.sh"
+             sh "bash k8s-deployment.sh k8s_DEV-deployment_service.yaml default"
             }
            },
            "Rollout Status": {
              withKubeConfig([credentialsId: 'kubeconfig']) { // To get access the Kubernetes API Server
-               sh "bash k8s-deployment-rollout-status.sh"
+               sh "bash k8s-deployment-rollout-status.sh default"
              }
            }
          )
@@ -165,6 +165,35 @@ pipeline {
               }
             )
           }
+        }
+      }
+
+      // For PROD - 3 Replicas
+      // We also specify Pod resource limits for PROD
+      /*
+      resources:
+       requests:
+        memory: "256Mi"
+        cpu: "200m"
+       limits:
+        memory: "512Mi"
+        cpu: "500m"
+      */
+      // We are exposing a ClusterIP for this Deployment, to access it externally we will use an Istio Ingress Gateway
+      stage('Kubernetes Deployment - PROD') {
+        steps {
+            parallel(
+              "Deployment": {
+                withKubeConfig([credentialsId: 'kubeconfig']) { // To get access the Kubernetes API Server
+                  sh "bash k8s-deployment.sh k8s_PROD-deployment_service.yaml prod"
+                }
+              },
+              "Rollout Status": {
+                withKubeConfig([credentialsId: 'kubeconfig']) { // To get access the Kubernetes API Server
+                  sh "bash k8s-deployment-rollout-status.sh prod"
+                }
+              }
+            )
         }
       }
 

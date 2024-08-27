@@ -95,7 +95,7 @@ pipeline {
         }
       }
 
-      // For DEV - 2 Replicas
+      // For DEV - 2 Replicas.
       stage('Kubernetes Deployment - DEV') {
         steps {
          parallel(

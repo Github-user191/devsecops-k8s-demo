@@ -1,6 +1,21 @@
 #!/bin/bash
 
-#k8s-deployment.sh
+# Usage: ./k8s-deployment.sh <manifestFile> <namespace>
 
-sed -i "s#replace#${imageName}#g" k8s_deployment_service.yaml
-kubectl -n default apply -f k8s_deployment_service.yaml
+# Check if the correct number of arguments are provided
+if [ "$#" -ne 2 ]; then
+  echo "Usage: $0 <manifestFile> <namespace>"
+  exit 1
+fi
+
+# Assign arguments to variables
+manifestFile=$1
+namespace=$2
+
+echo "manifestFile is: $1 and namespace is: $2"
+
+
+# Replace Image name inside the Kubernetes Manifest file, its currently set to "replace"
+sed -i "s#replace#${imageName}#g" "${manifestFile}"
+# Apply the manifest file to the specified namespace
+kubectl -n "${namespace}" apply -f "${manifestFile}"

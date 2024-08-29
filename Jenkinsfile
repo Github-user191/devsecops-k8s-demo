@@ -118,7 +118,7 @@ pipeline {
           script {
             try {
               withKubeConfig([credentialsId: 'kubeconfig']) { // To get access the Kubernetes API Server
-                sh "bash integration-test.sh"
+                sh "bash integration-test.sh DEV"
               }
             } catch(e) {
 
@@ -195,6 +195,25 @@ pipeline {
               }
             )
         }
+      }
+
+      stage('Integration Tests - DEV') {
+          steps {
+            script {
+              try {
+                withKubeConfig([credentialsId: 'kubeconfig']) { // To get access the Kubernetes API Server
+                  sh "bash integration-test.sh PROD"
+                }
+              } catch(e) {
+
+                // If the integration tests fail, rollback to the previous Deployment
+                withKubeConfig([credentialsId: 'kubeconfig']) { // To get access the Kubernetes API Server
+                  sh "kubectl -n default rollout undo deploy ${deploymentName}"
+                }
+                throw e
+              }
+            }
+          }
       }
 
     }
